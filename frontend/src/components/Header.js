@@ -6,6 +6,7 @@ import {
 	DarkMode,
 	ExpandMore,
 	MoreVert as MoreIcon,
+	Search as SearchIcon,
 	WbSunny,
 } from "@mui/icons-material";
 import { makeStyles } from "@mui/styles";
@@ -89,7 +90,7 @@ const ButtonWithText = ({ text, icon, more, handler }) => (
 	</Button>
 );
 
-const Header = ({ isAuthenticated, mode, toggleColorMode }) => {
+const Header = ({ isAuthenticated, mode, toggleColorMode, onSearchTrigger }) => {
 	const classes = useStyles();
 
 	const location = useLocation();
@@ -148,8 +149,9 @@ const Header = ({ isAuthenticated, mode, toggleColorMode }) => {
 						<Image src={logo} alt="Logo" sx={{ p: 0, my: 0, height: "100%", maxWidth: "200px" }} />
 					</Box>
 					<Box className={classes.grow} style={{ height: "100%" }} />
-					<Box sx={{ display: "flex", alignItems: "center", height: "100%", py: 1, mr: 1 }}>
-						<IconButton id="dark-mode-toggle" color="primary" onClick={toggleColorMode} aria-label="Toggle theme">
+					<Box sx={{ display: "flex", alignItems: "center", height: "100%", py: 1, mr: 1 }}>					<IconButton id="global-search-trigger" color="primary" onClick={onSearchTrigger} aria-label="Global search" title="Search (Ctrl+K)">
+						<SearchIcon />
+					</IconButton>						<IconButton id="dark-mode-toggle" color="primary" onClick={toggleColorMode} aria-label="Toggle theme">
 							{mode === "dark"
 								? <DarkMode id="theme-indicator-dark" />
 								: <WbSunny id="theme-indicator-light" />}

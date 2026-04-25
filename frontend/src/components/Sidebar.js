@@ -83,6 +83,13 @@ const Sidebar = ({ isSmall: sidebarIsSmall }) => {
 			},
 		}] : []),
 		{
+			text: "Import",
+			id: "sidebar-import-link",
+			handler: () => {
+				navigate("/import");
+			},
+		},
+		{
 			text: "Overview",
 			handler: () => {
 				navigate("/dashboard");
@@ -105,13 +112,15 @@ const Sidebar = ({ isSmall: sidebarIsSmall }) => {
 	return (
 		<div className={classes.sidebar} style={{ width: (isSmall) ? "50px" : "200px", padding: (isSmall) ? "20px 5px" : "20px 5px", textAlign: "center" }}>
 			{!isSmall && buttons.map((button) => (
-				<ButtonWithText
-					key={button.text}
-					icon={button.icon}
-					text={button.text}
-					handler={button.handler}
-					more={button.more}
-				/>
+				<div key={button.text} id={button.id}>
+					<ButtonWithText
+						key={button.text}
+						icon={button.icon}
+						text={button.text}
+						handler={button.handler}
+						more={button.more}
+					/>
+				</div>
 			))}
 			{isSmall && buttons.map((button, ind) => (
 				<ButtonSimple

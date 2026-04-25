@@ -12,6 +12,7 @@ import colors from "./_colors.scss";
 import "react-table-6/react-table.css";
 import Header from "./components/Header.js";
 import Footer from "./components/Footer.js";
+import GlobalSearchDialog from "./components/GlobalSearchDialog.js";
 import AdminOnly from "./components/AdminOnly.js";
 import Protected from "./components/Protected.js";
 import GuestOnly from "./components/GuestOnly.js";
@@ -28,6 +29,7 @@ import Users from "./screens/Users.js";
 import Dashboard from "./screens/Dashboard.js";
 import Dashboard1 from "./screens/Dashboard1.js";
 import Dashboard2 from "./screens/Dashboard2.js";
+import Import from "./screens/Import.js";
 import { adjustColors, jwt, colorSuggestions } from "./utils/index.js";
 import Map from "./components/Map.js";
 
@@ -40,6 +42,9 @@ const App = () => {
 	const location = useLocation();
 	const [authenticated, setAuthenticated] = useState(false);
 	const [mode, setMode] = useState(() => getInitialMode());
+	const [searchOpen, setSearchOpen] = useState(false);
+	const [users, setUsers] = useState([]);
+	const [dashboards, setDashboards] = useState([]);
 
 	useEffect(() => {
 		setAuthenticated(jwt.isAuthenticated());
@@ -50,7 +55,44 @@ const App = () => {
 		document.body.classList.toggle("dark-mode", mode === "dark");
 	}, [mode]);
 
+	// Global keyboard shortcuts
+	useEffect(() => {
+		const handleKeyDown = (e) => {
+			// Ctrl+K or Cmd+K for search
+			if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+				e.preventDefault();
+				setSearchOpen(true);
+			}
+			// Escape to close search
+			if (e.key === "Escape" && searchOpen) {
+				setSearchOpen(false);
+			}
+		};
+
+		window.addEventListener("keydown", handleKeyDown);
+		return () => window.removeEventListener("keydown", handleKeyDown);
+	}, [searchOpen]);
+
+	// Fetch users data for search (admin only)
+	useEffect(() => {
+		const fetchSearchData = async () => {
+			if (authenticated && jwt.decode()?.role === "admin") {
+				try {
+					const { users: usersData } = await (await import("./api/index.js")).getUsersData();
+					if (usersData) setUsers(usersData);
+				} catch {
+					// Silently fail if fetch fails
+				}
+			}
+		};
+
+		if (authenticated) {
+			fetchSearchData();
+		}
+	}, [authenticated]);
+
 	const toggleColorMode = () => setMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
+
 
 	const theme = useMemo(() => createTheme({
 		palette: {
@@ -94,7 +136,8 @@ const App = () => {
 			<ThemeProvider theme={theme}>
 				<ErrorBoundary FallbackComponent={ErrorFallback}>
 					<LocalizationProvider dateAdapter={AdapterDayjs}>
-						<Header isAuthenticated={authenticated} mode={mode} toggleColorMode={toggleColorMode} />
+						<Header isAuthenticated={authenticated} mode={mode} toggleColorMode={toggleColorMode} onSearchTrigger={() => setSearchOpen(true)} />
+						<GlobalSearchDialog open={searchOpen} onClose={() => setSearchOpen(false)} users={users} dashboards={dashboards} />
 						<main style={{ position: "relative", zIndex: 0, height: `calc(100vh - ${authenticated ? "160" : "70"}px)` }}>
 							<Routes>
 								<Route index element={<GuestOnly c={<SignIn />} />} />
@@ -108,6 +151,7 @@ const App = () => {
 								<Route path="dashboard1" element={<Protected c={<Dashboard1 />} />} />
 								<Route path="dashboard2" element={<Protected c={<Dashboard2 />} />} />
 								<Route path="map" element={<Protected c={<Map />} />} />
+								<Route path="import" element={<Protected c={<Import />} />} />
 								<Route path="*" element={<NotFound />} />
 							</Routes>
 						</main>
