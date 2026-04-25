@@ -3,8 +3,10 @@ import { styled } from "@mui/material/styles";
 import { AppBar, Toolbar, Typography, Menu, MenuItem, IconButton, Button, Paper, Breadcrumbs, Box } from "@mui/material";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
+	DarkMode,
 	ExpandMore,
 	MoreVert as MoreIcon,
+	WbSunny,
 } from "@mui/icons-material";
 import { makeStyles } from "@mui/styles";
 import { Image } from "mui-image";
@@ -17,7 +19,8 @@ const useStyles = makeStyles((theme) => ({
 	grow: {
 		flexGrow: 1,
 		flexBasis: "auto",
-		background: "white",
+		background: theme.palette.background.paper,
+		color: theme.palette.text.primary,
 		zIndex: 1200,
 		height: "70px",
 	},
@@ -86,7 +89,7 @@ const ButtonWithText = ({ text, icon, more, handler }) => (
 	</Button>
 );
 
-const Header = ({ isAuthenticated }) => {
+const Header = ({ isAuthenticated, mode, toggleColorMode }) => {
 	const classes = useStyles();
 
 	const location = useLocation();
@@ -145,6 +148,13 @@ const Header = ({ isAuthenticated }) => {
 						<Image src={logo} alt="Logo" sx={{ p: 0, my: 0, height: "100%", maxWidth: "200px" }} />
 					</Box>
 					<Box className={classes.grow} style={{ height: "100%" }} />
+					<Box sx={{ display: "flex", alignItems: "center", height: "100%", py: 1, mr: 1 }}>
+						<IconButton id="dark-mode-toggle" color="primary" onClick={toggleColorMode} aria-label="Toggle theme">
+							{mode === "dark"
+								? <DarkMode id="theme-indicator-dark" />
+								: <WbSunny id="theme-indicator-light" />}
+						</IconButton>
+					</Box>
 					{isAuthenticated
 					&& (
 						<>
