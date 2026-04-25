@@ -298,3 +298,48 @@ text.selector-text {
 .MuiInputAdornment-positionEnd {
 	color: inherit !important;
 }
+
+@media print {
+	html,
+	body,
+	#root {
+		width: 100% !important;
+		min-height: auto !important;
+		overflow: visible !important;
+		background: white !important;
+		color: black !important;
+	}
+
+	#header,
+	#footer,
+	#sidebar,
+	.report-print-hidden {
+		display: none !important;
+	}
+
+	main,
+	.report-print-root,
+	.report-print-root * {
+		background: white !important;
+		color: black !important;
+		box-shadow: none !important;
+	}
+
+	main,
+	main > div,
+	main > div > div,
+	.header-container {
+		position: static !important;
+		width: 100% !important;
+		height: auto !important;
+		margin: 0 !important;
+		padding: 0 !important;
+		overflow: visible !important;
+		max-width: none !important;
+	}
+
+	.report-chart-block {
+		break-inside: avoid;
+		page-break-inside: avoid;
+	}
+}
