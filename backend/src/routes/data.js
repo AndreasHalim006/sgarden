@@ -246,3 +246,5 @@ router.post("/generate-custom-report", (req, res) => {
 		}
 	});
 
+export default router;
+
