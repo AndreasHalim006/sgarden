@@ -60,9 +60,11 @@ const ButtonWithText = ({ text, icon, more, handler }) => (
 	</span>
 );
 
-const ButtonSimple = ({ text, icon, handler, ind }) => (
-	<Button key={text} sx={{ minWidth: "30px!important", padding: "0px", marginTop: (ind === 0) ? "0px" : "10px" }} onClick={(event) => handler(event)}>
-		<Image src={icon} alt={text} fit="contain" width="30px" />
+const ButtonSimple = ({ id, text, icon, handler, ind }) => (
+	<Button id={id} key={text} sx={{ minWidth: "30px!important", padding: "0px", marginTop: (ind === 0) ? "0px" : "10px" }} onClick={(event) => handler(event)}>
+		{icon
+			? <Image src={icon} alt={text} fit="contain" width="30px" />
+			: <Typography color="white.main" fontWeight="bold">{text.charAt(0)}</Typography>}
 	</Button>
 );
 
@@ -107,10 +109,17 @@ const Sidebar = ({ isSmall: sidebarIsSmall }) => {
 				navigate("/dashboard2");
 			},
 		},
+		{
+			text: "Reports",
+			id: "sidebar-reports-link",
+			handler: () => {
+				navigate("/reports");
+			},
+		},
 	];
 
 	return (
-		<div className={classes.sidebar} style={{ width: (isSmall) ? "50px" : "200px", padding: (isSmall) ? "20px 5px" : "20px 5px", textAlign: "center" }}>
+		<div id="sidebar" className={classes.sidebar} style={{ width: (isSmall) ? "50px" : "200px", padding: (isSmall) ? "20px 5px" : "20px 5px", textAlign: "center" }}>
 			{!isSmall && buttons.map((button) => (
 				<div key={button.text} id={button.id}>
 					<ButtonWithText
@@ -125,6 +134,7 @@ const Sidebar = ({ isSmall: sidebarIsSmall }) => {
 			{isSmall && buttons.map((button, ind) => (
 				<ButtonSimple
 					key={button.text}
+					id={button.id}
 					icon={button.icon}
 					text={button.text}
 					handler={button.handler}
