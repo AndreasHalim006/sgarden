@@ -125,7 +125,9 @@ const Header = ({ isAuthenticated, mode, toggleColorMode, onSearchTrigger }) => 
 		>
 			{buttons.map((button) => (
 				<MenuItem key={button.text} onClick={button.handler}>
-					<Image src={button.icon} width="20px" sx={{ fill: "third" }} />
+					<Box sx={{ width: 20, height: 20 }}>
+						{button.icon}
+					</Box>
 					<p style={{ marginLeft: "5px" }}>{button.text}</p>
 					{button.more && <ExpandMore />}
 				</MenuItem>

@@ -2,17 +2,17 @@ import propTypes from "prop-types";
 import { TextField } from "@mui/material";
 
 export const Input = ({
-	id,
-	label,
-	required,
-	helperText,
-	error,
-	multiline,
+	id = "basic-form",
+	label = "",
+	required = false,
+	helperText = "",
+	error = false,
+	multiline = false,
 	minRows,
 	maxRows,
-	fullWidth,
-	variant,
-	onChange,
+	fullWidth = true,
+	variant = "outlined",
+	onChange = () => {},
 	children,
 	classes,
 	...props
@@ -52,16 +52,4 @@ Input.propTypes = {
 	variant: propTypes.string,
 	onChange: propTypes.func,
 	children: propTypes.any,
-};
-
-Input.defaultProps = {
-	id: "basic-form",
-	label: "",
-	required: false,
-	helperText: "",
-	error: false,
-	multiline: false,
-	fullWidth: true,
-	variant: "outlined",
-	onChange: () => {},
 };
