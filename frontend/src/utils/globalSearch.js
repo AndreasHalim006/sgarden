@@ -1,5 +1,5 @@
-import { isFuzzyMatch } from "./is-fuzzy-match.js";
-import { jwt } from "./jwt.js";
+import isFuzzyMatch from "./is-fuzzy-match.js";
+import jwt from "./jwt.js";
 
 const RESULTS_LIMIT_PER_CATEGORY = 8;
 
