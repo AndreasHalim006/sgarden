@@ -54,6 +54,7 @@
           "unicorn/prefer-module": "off",
           "unicorn/prefer-string-replace-all": "error",
           "unicorn/prefer-at": "error",
+          "unicorn/expiring-todo-comments": "off",
           "import/no-unresolved": "off"
         }
       },
@@ -65,6 +66,7 @@
           "iamnapo"
         ],
         "rules": {
+          "unicorn/expiring-todo-comments": "off",
           "import/no-unresolved": [
             "error",
             {
