@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ReactDOM from "react-dom/client";
 import { Route, Routes, BrowserRouter as Router, useLocation } from "react-router-dom";
 import { StyledEngineProvider, ThemeProvider, createTheme } from "@mui/material/styles";
@@ -31,40 +31,62 @@ import Dashboard2 from "./screens/Dashboard2.js";
 import { adjustColors, jwt, colorSuggestions } from "./utils/index.js";
 import Map from "./components/Map.js";
 
-const theme = createTheme({
-	palette: {
-		primary: { main: colors.primary },
-		secondary: { main: colors.secondary || colorSuggestions.secondary },
-		third: { main: colors.third || colorSuggestions.third },
-
-		primaryLight: { main: adjustColors(colors.primary, 100) },
-		primaryDark: { main: adjustColors(colors.primary, -80) },
-		secondaryLight: { main: adjustColors(colors.secondary || colorSuggestions.secondary, 100) },
-		secondaryDark: { main: adjustColors(colors.secondary || colorSuggestions.secondary, -80) },
-		thirdLight: { main: adjustColors(colors.third || colorSuggestions.third, 100) },
-		thirdDark: { main: adjustColors(colors.third || colorSuggestions.third, -80) },
-
-		success: { main: colors.success },
-		error: { main: colors.error },
-		warning: { main: colors.warning },
-		info: { main: colors.info },
-
-		dark: { main: colors.dark },
-		light: { main: colors.light },
-		grey: { main: colors.grey },
-		greyDark: { main: colors.greyDark },
-		green: { main: colors.green },
-		white: { main: "#ffffff" },
-	},
-});
+const getInitialMode = () => {
+	const storedMode = window.localStorage.getItem("themeMode");
+	return storedMode === "dark" || storedMode === "light" ? storedMode : "light";
+};
 
 const App = () => {
 	const location = useLocation();
 	const [authenticated, setAuthenticated] = useState(false);
+	const [mode, setMode] = useState(() => getInitialMode());
 
 	useEffect(() => {
 		setAuthenticated(jwt.isAuthenticated());
 	}, [location]);
+
+	useEffect(() => {
+		window.localStorage.setItem("themeMode", mode);
+		document.body.classList.toggle("dark-mode", mode === "dark");
+	}, [mode]);
+
+	const toggleColorMode = () => setMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
+
+	const theme = useMemo(() => createTheme({
+		palette: {
+			mode,
+			primary: { main: colors.primary },
+			secondary: { main: colors.secondary || colorSuggestions.secondary },
+			third: { main: colors.third || colorSuggestions.third },
+
+			primaryLight: { main: adjustColors(colors.primary, 100) },
+			primaryDark: { main: adjustColors(colors.primary, -80) },
+			secondaryLight: { main: adjustColors(colors.secondary || colorSuggestions.secondary, 100) },
+			secondaryDark: { main: adjustColors(colors.secondary || colorSuggestions.secondary, -80) },
+			thirdLight: { main: adjustColors(colors.third || colorSuggestions.third, 100) },
+			thirdDark: { main: adjustColors(colors.third || colorSuggestions.third, -80) },
+
+			success: { main: colors.success },
+			error: { main: colors.error },
+			warning: { main: colors.warning },
+			info: { main: colors.info },
+
+			dark: { main: colors.dark },
+			light: { main: colors.light },
+			grey: { main: colors.grey },
+			greyDark: { main: colors.greyDark },
+			green: { main: colors.green },
+			white: { main: "#ffffff" },
+			background: {
+				default: mode === "dark" ? "#121212" : "#ffffff",
+				paper: mode === "dark" ? "#1f1f1f" : "#ffffff",
+			},
+			text: {
+				primary: mode === "dark" ? "#f5f5f5" : "#000000",
+				secondary: mode === "dark" ? "#cfcfcf" : "#4f4f4f",
+			},
+		},
+	}), [mode]);
 
 	return (
 		<StyledEngineProvider injectFirst>
@@ -72,7 +94,7 @@ const App = () => {
 			<ThemeProvider theme={theme}>
 				<ErrorBoundary FallbackComponent={ErrorFallback}>
 					<LocalizationProvider dateAdapter={AdapterDayjs}>
-						<Header isAuthenticated={authenticated} />
+						<Header isAuthenticated={authenticated} mode={mode} toggleColorMode={toggleColorMode} />
 						<main style={{ position: "relative", zIndex: 0, height: `calc(100vh - ${authenticated ? "160" : "70"}px)` }}>
 							<Routes>
 								<Route index element={<GuestOnly c={<SignIn />} />} />
